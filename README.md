@@ -27,74 +27,15 @@ All levels are configured to run instantly with GitHub Codespaces. If you chose 
 
 
 
-#### 💻 Local installation
-
-Please note: You don't need a local installation if you are using GitHub Codespaces.
-
-The following local installation guide is adapted to Debian/Ubuntu and CentOS/RHEL, and assumes your goal is to play through all the game's seasons.
+#### 💻 Dependencies installation
 
 1. Open your terminal.
-1. Install OpenLDAP headers needed to compile `python-ldap`, depending on your Linux distribution. Check by running:
-
-```bash
-uname -a
-```
-- For Debian/Ubuntu, run:
-```bash
-sudo apt-get update
-sudo apt-get install libldap2-dev libsasl2-dev
-```
-
-- For CentOS/RHEL, run:
-
-```bash
-sudo yum install python-devel openldap-devel
-```
-
-- For Archlinux, run:
-
-```bash
-sudo pacman -Sy libldap libsasl
-```
-
-- Then, for all of the above Linux distributions install `pyOpenSSL` by running:
-
-```bash
-pip3 install pyOpenSSL
-```
-
-Once installation has completed, clone your repository to your local machine and install required dependencies.
-
-1. From your repository, click the **Code** drop down button in the upper-right of your repository navigation bar.
-1. Select the `Local` tab from the menu.
-1. Copy your preferred URL.
-1. In your terminal, change the working directory to the location where you want the cloned directory.
-1. Type `git clone` and paste the copied URL.
-
-```
-$ git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
-```
-
-6. Press **Enter** to create your local clone.
-7. Change the working directory to the cloned directory.
 8. Install dependencies by running:
 
 ```bash
 pip3 install -r requirements.txt
 ```
-
-- Programming Languages
-
-To play, you will need to have `python3` installed.
-
-If you are using VS Code locally, you can install the above programming languages through the editor extensions with these identifiers:
-
-1. `ms-python.python`
-1. `ms-python.vscode-pylance`
- 
-At this point, you can get started with Levels 1, 2, 3, 4, 5, by navigating on the respective folders and reading the `README.md` file.
-
-
+You are now ready to play!
 
 <footer>
 
