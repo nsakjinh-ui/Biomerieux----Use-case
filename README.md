@@ -18,7 +18,7 @@ To get started, please follow the 🛠️ set up guide.
 
 #### 🖥️ Using codespaces
 
-All levels are configured to run instantly with GitHub Codespaces. If you chose to use codespaces, be aware that this course **will count towards your 60 hours of monthly free allowance**. For more information about GitHub Codespaces, see the "[GitHub Codespaces overview](https://docs.github.com/en/codespaces/overview)." If you prefer to work locally, please follow the local installation guide in the next section.
+All levels are configured to run instantly with GitHub Codespaces.
 
 1. To create a codespace, click the **Code** drop down button in the upper-right of your repository navigation bar.
 1. Click **Create codespace on main**.
