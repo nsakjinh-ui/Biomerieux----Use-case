@@ -1,6 +1,6 @@
-# Secure Code Game
+# Secure Coding Challenge
 
-_Welcome to Secure Code Game - Season 1!_ :wave:
+_Welcome to Secure Coding Challenge!_ :wave:
 
 To get started, please follow the 🛠️ set up guide.
 
