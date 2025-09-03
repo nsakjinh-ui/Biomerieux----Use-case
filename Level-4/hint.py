@@ -20,6 +20,4 @@ which will result to the following query:
 Now that you know what's wrong with the code, can you fix it?
 
 
-Contribute new levels to the game in 3 simple steps! 
-Read our Contribution Guideline at github.com/skills/secure-code-game/blob/main/CONTRIBUTING.md
 """
