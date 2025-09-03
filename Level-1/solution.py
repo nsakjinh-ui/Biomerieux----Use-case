@@ -77,5 +77,3 @@ def validorder(order):
 # online shop we falsely placed trust to users for buying a positive integer of items only,
 # without malicious intend.
 
-
-# Contribute new levels to the game in 3 simple steps!
