@@ -1,6 +1,4 @@
 '''
-Welcome to Secure Code Game Season-1/Level-1!
-
 Follow the instructions below to get started:
 
 1. tests.py is passing but code.py is vulnerable
