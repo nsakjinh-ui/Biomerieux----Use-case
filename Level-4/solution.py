@@ -63,9 +63,3 @@ con.execute("INSERT INTO Users (user) VALUES (?)", (user_input,))
 # protection to help prevent SQL injection, but that shouldn't stop you from
 # following good practices. Contextually, be careful when handling user input
 # by planning for the worst and never trusting the user.
-
-# The GitHub Security Lab covered this flaw in one episode of Security Bites,
-# its series on secure programming: https://youtu.be/VE6c57Tk5gM
-
-# We also covered this flaw in a blog post about OWASP's Top 10 proactive controls:
-# https://github.blog/2021-12-06-write-more-secure-code-owasp-top-10-proactive-controls/
