@@ -92,5 +92,4 @@ class TaxPayer:
 # https://github.blog/2021-12-06-write-more-secure-code-owasp-top-10-proactive-controls/
 
 
-# Contribute new levels to the game in 3 simple steps!
-# Read our Contribution Guideline at github.com/skills/secure-code-game/blob/main/CONTRIBUTING.md
+
