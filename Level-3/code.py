@@ -1,5 +1,3 @@
-# Welcome to Secure Code Game Season-1/Level-3!
-
 # You know how to play by now, good luck!
 
 import os
