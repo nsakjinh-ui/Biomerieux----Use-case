@@ -1,5 +1,3 @@
-# Welcome to Secure Code Game Season-2/Level-4!
-
 # Follow the instructions below to get started:
 
 # 1. tests.py file is passing but code.py is vulnerable
