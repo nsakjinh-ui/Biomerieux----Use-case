@@ -79,4 +79,3 @@ def validorder(order):
 
 
 # Contribute new levels to the game in 3 simple steps!
-# Read our Contribution Guideline at github.com/skills/secure-code-game/blob/main/CONTRIBUTING.md
