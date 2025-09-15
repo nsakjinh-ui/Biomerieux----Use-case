@@ -6,6 +6,9 @@ To get started, please follow the 🛠️ set up guide.
 
 [![start-course](https://user-images.githubusercontent.com/1221423/235727646-4a590299-ffe5-480d-8cd5-8194ea184546.svg)](https://github.com/new?template_owner=nsakjinh-ui&template_name=Biom-rieux----Use-case&owner=%40me&name=skills-secure-code-game&description=My+clone+repository&visibility=public)
 
+[![start-course](https://user-images.githubusercontent.com/1221423/235727646-4a590299-ffe5-480d-8cd5-8194ea184546.svg)](https://github.com/new?template_owner=nsakjinh-ui&template_name=Biomerieux----Use-case&owner=%40me&name=biomerieux-use-case&description=Repository+created+from+Biomerieux----Use-case+template&visibility=public)
+
+
 
 1. Right-click **Start course** and open the link in a new tab.
 1. In the new tab, most of the prompts will automatically fill in for you.
