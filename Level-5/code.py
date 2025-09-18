@@ -1,54 +1,55 @@
+# Follow the instructions below to get started:
 
-# This is the last level of our first season, good luck!
+# 1. tests.py file is passing but code.py is vulnerable
+# 2. Review the code in this file. Can you spot the bugs(s)?
+# 3. Fix the bug(s) in code.py. Ensure that tests.py passes
+# 4. Run hack.py and if passing then CONGRATS!
+# 5. If stuck then read the hint
+# 6. Compare your solution with solution.txt
 
-import binascii
-import random
-import secrets
-import hashlib
+# Run code.py (RECOMMENDED for this level) by following the instructions below:
+
+# Run by opening a terminal and running the following:
+# $ export FLASK_APP=Season-2/Level-4/code.py && export FLASK_ENV=development && export FLASK_DEBUG=0 && flask run
+
 import os
-import bcrypt
+import re
+from flask import Flask, request, render_template
+app = Flask(__name__)
 
-class Random_generator:
+# Set the absolute path to the template directory
+template_dir = os.path.abspath('Season-2/Level-4/templates')
+app.template_folder = template_dir
 
-    # generates a random token
-    def generate_token(self, length=8, alphabet=(
-    '0123456789'
-    'abcdefghijklmnopqrstuvwxyz'
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    )):
-        return ''.join(random.choice(alphabet) for _ in range(length))
+# Hard-coded planet data
+planet_data = {
+    "Mercury": "The smallest and fastest planet in the Solar System.",
+    "Venus": "The second planet from the Sun and the hottest planet.",
+    "Earth": "Our home planet and the only known celestial body to support life.",
+    "Mars": "The fourth planet from the Sun and often called the 'Red Planet'.",
+    "Jupiter": "The largest planet in the Solar System and known for its great red spot.",
+}
 
-    # generates salt
-    def generate_salt(self, rounds=12):
-        salt = ''.join(str(random.randint(0, 9)) for _ in range(21)) + '.'
-        return f'$2b${rounds}${salt}'.encode()
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        planet = request.form.get('planet')
+        sanitized_planet = re.sub(r'[<>{}[\]]', '', planet if planet else '')
 
-class SHA256_hasher:
+        if sanitized_planet:
+            if 'script' in sanitized_planet.lower() :
+                return '<h2>Blocked</h2></p>'
+    
+            return render_template('details.html', 
+                                   planet=sanitized_planet, 
+                                   info=get_planet_info(sanitized_planet))
+        else:
+            return '<h2>Please enter a planet name.</h2>'
 
-    # produces the password hash by combining password + salt because hashing
-    def password_hash(self, password, salt):
-        password = binascii.hexlify(hashlib.sha256(password.encode()).digest())
-        password_hash = bcrypt.hashpw(password, salt)
-        return password_hash.decode('ascii')
+    return render_template('index.html')
 
-    # verifies that the hashed password reverses to the plain text version on verification
-    def password_verification(self, password, password_hash):
-        password = binascii.hexlify(hashlib.sha256(password.encode()).digest())
-        password_hash = password_hash.encode('ascii')
-        return bcrypt.checkpw(password, password_hash)
+def get_planet_info(planet):
+    return planet_data.get(planet, 'Unknown planet.')
 
-class MD5_hasher:
-
-    # same as above but using a different algorithm to hash which is MD5
-    def password_hash(self, password):
-        return hashlib.md5(password.encode()).hexdigest()
-
-    def password_verification(self, password, password_hash):
-        password = self.password_hash(password)
-        return secrets.compare_digest(password.encode(), password_hash.encode())
-
-# a collection of sensitive secrets necessary for the software to operate
-PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
-PUBLIC_KEY = os.environ.get('PUBLIC_KEY')
-SECRET_KEY = 'TjWnZr4u7x!A%D*G-KaPdSgVkXp2s5v8'
-PASSWORD_HASHER = 'MD5_hasher'
+if __name__ == '__main__':
+    app.run()

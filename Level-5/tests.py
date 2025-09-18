@@ -1,20 +1,63 @@
+# Run tests.py by following the instructions below:
+
+# This file contains passing tests.
+
+# Run them by opening a terminal and running the following:
+# $ python3 SLevel-4/tests.py
+
+# Note: first you have to run code.py following the instructions
+# on top of that file so that the environment variables align but
+# it's not necessary to run both files in parallel as the tests
+# initialize a new environment, similar to code.py
+
+from code import app, get_planet_info
 import unittest
-import code as c
+from flask_testing import TestCase
 
-class TestCrypto(unittest.TestCase): 
-  
-    # verifies that hash and verification are matching each other for SHA
-    def test_1(self):
-        rd = c.Random_generator()
-        sha256 = c.SHA256_hasher()
-        pass_ver = sha256.password_verification("abc", sha256.password_hash("abc",rd.generate_salt()))
-        self.assertEqual(pass_ver, True)
+class MyTestCase(TestCase):
+    def create_app(self):
+        app.config['TESTING'] = True
+        app.config['TEMPLATES_AUTO_RELOAD'] = True
+        return app
 
-    # verifies that hash and verification are matching each other for MD5
-    def test_2(self):
-        md5 = c.MD5_hasher()
-        md5_hash = md5.password_verification("abc", md5.password_hash("abc"))
-        self.assertEqual(md5_hash, True)
-        
-if __name__ == '__main__':    
+    def test_index_route(self):
+        response = self.client.get('/')
+        self.assert200(response)
+        self.assertTemplateUsed('index.html')
+
+    def test_get_planet_info_invalid_planet(self):
+        planet = 'Pluto'
+        expected_info = 'Unknown planet.'
+        result = get_planet_info(planet)
+        self.assertEqual(result, expected_info)
+
+    def test_get_planet_info_valid_planet(self):
+        planet = 'Mercury'
+        expected_info = 'The smallest and fastest planet in the Solar System.'
+        result = get_planet_info(planet)
+        self.assertEqual(result, expected_info)
+
+    def test_index_valid_planet(self):
+        planet = 'Venus'
+        response = self.client.post('/', data={'planet': planet})
+        self.assert200(response)
+        self.assertEqual(response.data.decode()[:15], '<!DOCTYPE html>')
+
+    def test_index_missing_planet(self):
+        response = self.client.post('/')
+        self.assert200(response)
+        self.assertEqual(response.data.decode(), '<h2>Please enter a planet name.</h2>')
+
+    def test_index_empty_planet(self):
+        response = self.client.post('/', data={'planet': ''})
+        self.assert200(response)
+        self.assertEqual(response.data.decode(), '<h2>Please enter a planet name.</h2>')
+
+    def test_index_active_content_planet(self):
+        planet = "<script ...>"
+        response = self.client.post('/', data={'planet': planet})
+        self.assert200(response)
+        self.assertEqual(response.data.decode(), '<h2>Blocked</h2></p>')
+
+if __name__ == '__main__':
     unittest.main()

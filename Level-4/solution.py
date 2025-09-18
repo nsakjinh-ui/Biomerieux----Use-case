@@ -1,65 +1,65 @@
-import sqlite3
+import binascii
+import secrets
+import hashlib
+import os
+import bcrypt
 
-# Please note: The following code is NOT expected to run and it's provided for explanation only
+class Random_generator:
 
-# Vulnerable: this code will allow an attacker to insert the "DROP TABLE" SQL command into the query
-# and delete all users from the database.
-con = sqlite3.connect('example.db')
-user_input = "Mary'); DROP TABLE Users;--"
-sql_stmt = "INSERT INTO Users (user) VALUES ('" + user_input + "');"
-con.executescript(sql_stmt)
+    # generates a random token using the secrets library for true randomness
+    def generate_token(self, length=8, alphabet=(
+    '0123456789'
+    'abcdefghijklmnopqrstuvwxyz'
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    )):
+        return ''.join(secrets.choice(alphabet) for i in range(length))
 
-# Secure through Parameterized Statements
-con = sqlite3.connect('example.db')
-user_input = "Mary'); DROP TABLE Users;--"
-# The secure way to query a database is
-con.execute("INSERT INTO Users (user) VALUES (?)", (user_input,))
+    # generates salt using the bcrypt library which is a safe implementation
+    def generate_salt(self, rounds=12):
+        return bcrypt.gensalt(rounds)
+
+class SHA256_hasher:
+
+    # produces the password hash by combining password + salt because hashing
+    def password_hash(self, password, salt):
+        password = binascii.hexlify(hashlib.sha256(password.encode()).digest())
+        password_hash = bcrypt.hashpw(password, salt)
+        return password_hash.decode('ascii')
+
+    # verifies that the hashed password reverses to the plain text version on verification
+    def password_verification(self, password, password_hash):
+        password = binascii.hexlify(hashlib.sha256(password.encode()).digest())
+        password_hash = password_hash.encode('ascii')
+        return bcrypt.checkpw(password, password_hash)
+
+# a collection of sensitive secrets necessary for the software to operate
+PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
+PUBLIC_KEY = os.environ.get('PUBLIC_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+PASSWORD_HASHER = 'SHA256_hasher'
 
 # Solution explanation:
 
-# The methodology used above to protect against SQL injection is the usage of parameterized
-# statements. They protect against user input tampering with the query logic
-# by using '?' as user input placeholders.
+# Some mistakes are basic, like choosing a cryptographically-broken algorithm
+# or committing secret keys directly in your source code.
 
-# In the example above, the user input, as wrong as it is, will be inserted into the database
-# as a new user, but the DROP TABLE command will not be executed.
+# You are more likely to fall for something more advanced, like using functions that
+# seem random but produce a weak randomness.
 
-# code.py has 5 methods namely:
-# (1) get_stock_info
-# (2) get_stock_price
-# (3) update_stock_price
-# (4) exec_multi_query
-# (5) exec_user_script
+# The code suffers from:
+# - reinventing the wheel by generating salt manually instead of calling gensalt()
+# - not utilizing the full range of possible salt values
+# - using the random module instead of the secrets module
 
-# All methods are vulnerable!
+# Notice that we used the “random” module, which is designed for modeling and simulation,
+# not for security or cryptography.
 
-# Some are also suffering from bad design.
-# We believe that methods 1, 2, and 3 have a more security-friendly design compared
-# to methods 4 and 5.
+# A good practice is to use modules specifically designed and, most importantly,
+# confirmed by the security community as secure for cryptography-related use cases.
 
-# This is because methods 4 and 5, by design, provide attackers with the chance of
-# arbitrary script execution.
+# To fix the code, we used the “secrets” module, which provides access to the most secure
+# source of randomness on my operating system. I also used functions for generating secure
+# tokens and hard-to-guess URLs.
 
-# We believe that security plays an important role and methods like 4 and 5 should be
-# avoided fully.
-
-# We, therefore, propose in our model solution to completely remove them instead of
-# trying to secure them in their existing form. A better approach would be to design
-# them from the beginning, like methods 1, 2, and 3, so that user input could be a
-# placeholder in pre-existing logic, instead of giving users the power of directly
-# injecting logic.
-
-# More details:
-# One protection available to prevent SQL injection is the use of prepared statements,
-# a database feature executing repeated queries. The protection stems from
-# the fact that queries are no longer executed dynamically.
-
-# The user input will be passed to a template placeholder, which means
-# that even if someone manages to pass unsanitized data to a query, the injection
-# will not be in position to modify the databases' query template. Therefore no SQL
-# injection will occur.
-
-# Widely-used web frameworks such as Ruby on Rails and Django offer built-in
-# protection to help prevent SQL injection, but that shouldn't stop you from
-# following good practices. Contextually, be careful when handling user input
-# by planning for the worst and never trusting the user.
+# Other python modules approved and recommended by the security community include argon2
+# and pbkdf2.

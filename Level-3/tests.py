@@ -1,48 +1,62 @@
+'''
+Please note:
+
+The first file that you should run in this level is tests.py for database creation, with all tests passing.
+Remember that running the hack.py will change the state of the database, causing some tests inside tests.py
+to fail.
+
+If you like to return to the initial state of the database, please delete the database (level-4.db) and run 
+the tests.py again to recreate it.
+'''
+
 import unittest
-import os
 import code as c
 
-class TestTaxPayer(unittest.TestCase):
-    # Example 1 - shows a valid path to a profile picture
+class TestDatabase(unittest.TestCase): 
+  
+    # tests for correct retrieval of stock info given a symbol
     def test_1(self):
+        op = c.DB_CRUD_ops()
+        expected_output = "[METHOD EXECUTED] get_stock_info\n[QUERY] SELECT * FROM stocks WHERE symbol = 'MSFT'\n[RESULT] ('2022-01-06', 'MSFT', 300.0)"
+        actual_output = op.get_stock_info('MSFT')
+        self.assertEqual(actual_output, expected_output)
 
-        # creates tax payer object with dummy username and password
-        test_obj = c.TaxPayer('username_test', 'password_test')
-        # user input to the profile picture
-        input = 'assets/prof_picture.png'
-        # the output of the function upon processing user input
-        output = test_obj.get_prof_picture(input)
-
-        # the original function the method uses to come up with base directory
-        original_base_dir = os.path.dirname(os.path.abspath(__file__))
-        # the base directory that the code points on AFTER user input is supplied
-        # the trick here is to use the length of the original directory counting from left
-        resulted_based_dir = output[:len(os.path.dirname(os.path.abspath(__file__)))]
-
-        # checks against path traversal by comparing the original to resulted directory
-        self.assertEqual(original_base_dir, resulted_based_dir)
-
-    # Example 2 - shows a valid path to a tax form
+    # tests for correct defense against SQLi in the case where a user passes more than one query or restricted characters
     def test_2(self):
-        # creates tax payer object with dummy username and password
-        test_obj = c.TaxPayer('username_test', 'password_test')
-        # gets base directory
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        # user input to the profile picture
-        file_path = '/assets/tax_form.pdf'
-        # complete path for input
-        input = base_dir + file_path
-        # the output of the function upon processing user input
-        output = test_obj.get_tax_form_attachment(input)
+        op = c.DB_CRUD_ops()
+        expected_output = "[METHOD EXECUTED] get_stock_info\n[QUERY] SELECT * FROM stocks WHERE symbol = 'MSFT'; UPDATE stocks SET price = '500' WHERE symbol = 'MSFT'--'\nCONFIRM THAT THE ABOVE QUERY IS NOT MALICIOUS TO EXECUTE"
+        actual_output = op.get_stock_info("MSFT'; UPDATE stocks SET price = '500' WHERE symbol = 'MSFT'--")
+        self.assertEqual(actual_output, expected_output)
 
-        # the original function the method uses to come up with base directory
-        original_base_dir = os.path.dirname(os.path.abspath(__file__))
-        # the base directory that the code points on AFTER user input is supplied
-        # the trick here is to use the length of the original directory counting from left
-        resulted_based_dir = output[:len(os.path.dirname(os.path.abspath(__file__)))]
+    # tests for correct retrieval of stock price
+    def test_3(self):
+        op = c.DB_CRUD_ops()
+        expected_output = "[METHOD EXECUTED] get_stock_price\n[QUERY] SELECT price FROM stocks WHERE symbol = 'MSFT'\n[RESULT] (300.0,)\n"
+        actual_output = op.get_stock_price('MSFT')
+        self.assertEqual(actual_output, expected_output)
 
-        # checks against path traversal by comparing the original to resulted directory
-        self.assertEqual(original_base_dir, resulted_based_dir)
-
+    # tests for correct update of stock price given symbol and updated price
+    def test_4(self):
+        op = c.DB_CRUD_ops()
+        expected_output = "[METHOD EXECUTED] update_stock_price\n[QUERY] UPDATE stocks SET price = '300' WHERE symbol = 'MSFT'\n"
+        actual_output = op.update_stock_price('MSFT', 300.0)
+        self.assertEqual(actual_output, expected_output)
+    
+    # tests for correct execution of multiple queries
+    def test_5(self):
+        op = c.DB_CRUD_ops()
+        query_1 = "[METHOD EXECUTED] exec_multi_query\n[QUERY]SELECT price FROM stocks WHERE symbol = 'MSFT'\n[RESULT] (300.0,) "
+        query_2 = "[QUERY] SELECT * FROM stocks WHERE symbol = 'MSFT'\n[RESULT] ('2022-01-06', 'MSFT', 300.0) "
+        expected_output = query_1 + query_2
+        actual_output = op.exec_multi_query("SELECT price FROM stocks WHERE symbol = 'MSFT'; SELECT * FROM stocks WHERE symbol = 'MSFT'")
+        self.assertEqual(actual_output, expected_output)
+    
+    # tests for correct execution of user script
+    def test_6(self):
+        op = c.DB_CRUD_ops()
+        expected_output = "[METHOD EXECUTED] exec_user_script\n[QUERY] SELECT price FROM stocks WHERE symbol = 'MSFT'\n[RESULT] (300.0,)"
+        actual_output = op.exec_user_script("SELECT price FROM stocks WHERE symbol = 'MSFT'")
+        self.assertEqual(actual_output, expected_output) 
+        
 if __name__ == '__main__':    
     unittest.main()
