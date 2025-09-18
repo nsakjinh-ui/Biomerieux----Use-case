@@ -1,6 +1,6 @@
-# Secure Coding Challenge
+# Mission : Code Secure
 
-_Welcome to Secure Coding Challenge!_ :wave:
+_Welcome to the mission : Code Secure!_ :wave:
 
 To get started, please follow the 🛠️ set up guide.
 
