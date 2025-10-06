@@ -1,6 +1,3 @@
-
-# This is the last level of our first season, good luck!
-
 import binascii
 import random
 import secrets
@@ -22,6 +19,8 @@ class Random_generator:
     def generate_salt(self, rounds=12):
         salt = ''.join(str(random.randint(0, 9)) for _ in range(21)) + '.'
         return f'$2b${rounds}${salt}'.encode()
+
+# !!! If you use another hashing algorythm please keep the name SHA256_hasher or the tests won't pass !!!
 
 class SHA256_hasher:
 
