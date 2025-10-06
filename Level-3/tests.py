@@ -45,6 +45,9 @@ class TestDatabase(unittest.TestCase):
     # tests for correct execution of multiple queries
     def test_5(self):
         op = c.DB_CRUD_ops()
+        if not hasattr(op, "exec_multi_query"):
+            print("Well done ! exec_multi_query should not be implemented, removing it entirely is the best way to go.")
+            return
         query_1 = "[METHOD EXECUTED] exec_multi_query\n[QUERY]SELECT price FROM stocks WHERE symbol = 'MSFT'\n[RESULT] (300.0,) "
         query_2 = "[QUERY] SELECT * FROM stocks WHERE symbol = 'MSFT'\n[RESULT] ('2022-01-06', 'MSFT', 300.0) "
         expected_output = query_1 + query_2
@@ -54,6 +57,9 @@ class TestDatabase(unittest.TestCase):
     # tests for correct execution of user script
     def test_6(self):
         op = c.DB_CRUD_ops()
+        if not hasattr(op, "exec_user_script"):
+            print("Well done ! exec_user_script should not be implemented, removing it entirely is the best way to go.")
+            return
         expected_output = "[METHOD EXECUTED] exec_user_script\n[QUERY] SELECT price FROM stocks WHERE symbol = 'MSFT'\n[RESULT] (300.0,)"
         actual_output = op.exec_user_script("SELECT price FROM stocks WHERE symbol = 'MSFT'")
         self.assertEqual(actual_output, expected_output) 
