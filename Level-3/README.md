@@ -25,4 +25,4 @@ For each level, you will find the same file structure:
 1. You successfully completed this level when you (a) resolve all related code scanning alerts and (b) when both `hack.py` and `tests.py` pass 🟢.
 1. If you need more guidance, read the CodeQL scanning alerts.
 
-2. > Heads up, you need to erase the created database in order to start testing again.
+> Heads up, you need to erase the created database in order to start testing again.
