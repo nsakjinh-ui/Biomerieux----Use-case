@@ -8,9 +8,9 @@ class Random_generator:
 
     # generates a random token using the secrets library for true randomness
     def generate_token(self, length=8, alphabet=(
-    '0123456789'
-    'abcdefghijklmnopqrstuvwxyz'
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        '0123456789'
+        'abcdefghijklmnopqrstuvwxyz'
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     )):
         return ''.join(secrets.choice(alphabet) for i in range(length))
 
@@ -19,18 +19,46 @@ class Random_generator:
         return bcrypt.gensalt(rounds)
 
 class SHA256_hasher:
+    """
+    NOTE: kept original class name/structure for compatibility.
+    Internally uses PBKDF2-HMAC-SHA256 (100000 iterations) to derive a key,
+    then hashes that derived key with bcrypt. Returns/stores bcrypt hashes
+    as ASCII strings, and verifies accordingly.
+    """
 
-    # produces the password hash by combining password + salt because hashing
+    # produces the password hash by deriving a key with PBKDF2 and then bcrypting it
+    # salt: expected to be a bcrypt-style salt (bytes), e.g. bcrypt.gensalt()
     def password_hash(self, password, salt):
-        password = binascii.hexlify(hashlib.sha256(password.encode()).digest())
-        password_hash = bcrypt.hashpw(password, salt)
-        return password_hash.decode('ascii')
+        # normalize salt to bytes if caller supplied string
+        if isinstance(salt, str):
+            salt = salt.encode('ascii')
 
-    # verifies that the hashed password reverses to the plain text version on verification
+        # derive a key using PBKDF2-HMAC-SHA256
+        # 100_000 iterations is a reasonable default; tune to your environment
+        dk = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100_000)
+
+        # hash the derived key with bcrypt using provided bcrypt salt
+        bcrypt_hash = bcrypt.hashpw(dk, salt)
+
+        # return ASCII string for storage
+        return bcrypt_hash.decode('ascii')
+
+    # verifies that the hashed password matches the stored bcrypt hash
     def password_verification(self, password, password_hash):
-        password = binascii.hexlify(hashlib.sha256(password.encode()).digest())
-        password_hash = password_hash.encode('ascii')
-        return bcrypt.checkpw(password, password_hash)
+        # ensure password_hash is bytes
+        if isinstance(password_hash, str):
+            password_hash_bytes = password_hash.encode('ascii')
+        else:
+            password_hash_bytes = password_hash
+
+        # extract bcrypt salt from stored hash (first 29 bytes of bcrypt hash)
+        bcrypt_salt = password_hash_bytes[:29]
+
+        # re-derive the key using PBKDF2 with same salt/iterations
+        dk = hashlib.pbkdf2_hmac('sha256', password.encode(), bcrypt_salt, 100_000)
+
+        # bcrypt.checkpw compares the derived key against the stored bcrypt hash
+        return bcrypt.checkpw(dk, password_hash_bytes)
 
 # a collection of sensitive secrets necessary for the software to operate
 PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
