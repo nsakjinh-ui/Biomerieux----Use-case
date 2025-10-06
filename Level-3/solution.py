@@ -40,6 +40,14 @@ con.execute("INSERT INTO Users (user) VALUES (?)", (user_input,))
 # This is because methods 4 and 5, by design, provide attackers with the chance of
 # arbitrary script execution.
 
+# Warning: The exec_multi_query and exec_user_script functions are inherently
+# dangerous because they execute SQL provided directly by the user without any controls.
+# They therefore expose the application to serious SQL injection risks and must never be used in production.
+
+# These functions are included here for educational purposes only (laboratory / security demonstration).
+# In practice, you should use parameterized queries (prepared statements)
+# and avoid allowing free-form execution of SQL scripts
+
 # We believe that security plays an important role and methods like 4 and 5 should be
 # avoided fully.
 
